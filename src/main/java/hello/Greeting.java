@@ -5,7 +5,7 @@ public class Greeting {
 
     private final String engForm;
     private final String plForm;
-    private final String sentences;
+    private final Sentence sentences;
     private final String synonyms;
     private final String addDate;
     private final String modDate;
@@ -14,9 +14,7 @@ public class Greeting {
     public Greeting() {
         this.engForm = "pleasant";
         this.plForm = "miły, uprzejmy, sympatyczny";
-        this.sentences = "asentence:{id: 0, acontent: 'Affirmative sentece 2.1!', corr: ''}," +
-                "qsentence: {id: 1, qcontent: 'Question sentece 2.1!', corr: ''}," +
-                "nsentence: {id: 2, ncontent: 'Negative sentece 2.1!', corr: ''}";
+        this.sentences = new Sentence(1);
         this.synonyms = "{syncontent: 'Example of synonym 2!', corr: true}";
         this.addDate = "2017-11-01";
         this.modDate = "data_2";
@@ -29,10 +27,6 @@ public class Greeting {
 
     public String getPlForm() {
         return plForm;
-    }
-
-    public String getSentences() {
-        return sentences;
     }
 
     public String getSynonyms() {
@@ -49,6 +43,10 @@ public class Greeting {
 
     public String getMaxId() {
         return maxID;
+    }
+
+    public Sentence getSentence() {
+        return sentences;
     }
 
 }
