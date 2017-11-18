@@ -1,24 +1,24 @@
 package hello;
 import java.lang.*;
 
-public class Greeting {
+public class Word {
 
     private final String engForm;
     private final String plForm;
-    private final Sentence sentences;
-    private final String synonyms;
+    private final Sentences sentences;
+    private final Synonym synonyms;
     private final String addDate;
     private final String modDate;
     private final String maxID;
 
-    public Greeting() {
+    public Word() {
         this.engForm = "pleasant";
         this.plForm = "miły, uprzejmy, sympatyczny";
-        this.sentences = new Sentence(1);
-        this.synonyms = "{syncontent: 'Example of synonym 2!', corr: true}";
+        this.sentences = new Sentences(1);
+        this.synonyms = new Synonym();
         this.addDate = "2017-11-01";
-        this.modDate = "data_2";
-        this.maxID = "2017-11-07";
+        this.modDate = "2017-11-03";
+        this.maxID = "1";
     }
 
     public String getEngForm() {
@@ -29,7 +29,7 @@ public class Greeting {
         return plForm;
     }
 
-    public String getSynonyms() {
+    public Synonym getSynonyms() {
         return synonyms;
     }
 
@@ -45,7 +45,7 @@ public class Greeting {
         return maxID;
     }
 
-    public Sentence getSentence() {
+    public Sentences getSentences() {
         return sentences;
     }
 
