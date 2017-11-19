@@ -1,5 +1,7 @@
 package hello;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.http.MediaType;
@@ -13,8 +15,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/hello-world")
 public class HelloWorldController {
 
-    @RequestMapping(method=RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody Word sayHello() {
-        return new Word();
+    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    List<Word> sayHello() {
+        Word greeting1 = new Word();
+        Word greeting2 = new Word();
+        List<Word> list = new ArrayList<>();
+        list.add(greeting1);
+        list.add(greeting2);
+        return list;
     }
 }
