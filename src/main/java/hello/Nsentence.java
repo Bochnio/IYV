@@ -1,14 +1,13 @@
 package hello;
 
-public class Sentences {
-
+public class Nsentence {
     private final int id;
-    private final String content;
+    private final String ncontent;
     private final String corr;
 
-    public Sentences(int id){
-        this.id = id;
-        this.content = "Test";
+    public Nsentence(){
+        this.id = 3;
+        this.ncontent = "Test ncontent 3";
         this.corr = "true";
     }
 
@@ -16,13 +15,11 @@ public class Sentences {
         return id;
     }
 
-    public String getContent() {
-        return content;
+    public String getNcontent() {
+        return ncontent;
     }
 
     public String getCorr() {
         return corr;
     }
-
 }
-

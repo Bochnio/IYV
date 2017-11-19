@@ -11,13 +11,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletResponse;
+import javax.xml.soap.MimeHeaders;
+
 @Controller
 @RequestMapping("/hello-world")
 public class HelloWorldController {
-
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
-    List<Word> sayHello() {
+    List<Word> sayHello(HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
         Word greeting1 = new Word();
         Word greeting2 = new Word();
         List<Word> list = new ArrayList<>();
