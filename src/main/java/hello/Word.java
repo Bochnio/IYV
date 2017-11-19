@@ -6,7 +6,7 @@ public class Word {
     private final String engForm;
     private final String plForm;
     private final Sentences[] sentences;
-    private final Synonym synonyms;
+    private final Synon synonyms;
     private final String addDate;
     private final String modDate;
     private final String maxID;
@@ -16,7 +16,7 @@ public class Word {
         this.plForm = "miły, uprzejmy, sympatyczny";
         this.sentences = new Sentences[1];
         this.sentences[0] = new Sentences();
-        this.synonyms = new Synonym();
+        this.synonyms = new Synon();
         this.addDate = "2017-11-01";
         this.modDate = "2017-11-03";
         this.maxID = "2";
@@ -30,7 +30,7 @@ public class Word {
         return plForm;
     }
 
-    public Synonym getSynonyms() {
+    public Synon getSynonyms() {
         return synonyms;
     }
 

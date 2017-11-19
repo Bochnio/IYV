@@ -20,6 +20,8 @@ public class HelloWorldController {
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     List<Word> sayHello(HttpServletResponse response) {
+        //TO-DO: tutaj powinna być tylko metoda, która zwraca listę obiektów word
+        //Parametrami
         response.setHeader("Access-Control-Allow-Origin", "*");
         Word greeting1 = new Word("pleasant");
         Word greeting2 = new Word("brilliant");
