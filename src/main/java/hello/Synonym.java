@@ -2,15 +2,15 @@ package hello;
 
 public class Synonym {
 
-    private final String corr;
     private final String syncontent;
+    private final String corr;
 
     public Synonym(){
-        this.corr = "true";
         this.syncontent = "Treść testowa";
+        this.corr = "true";
     }
 
-    public String getContent() {
+    public String getSyncontent() {
         return syncontent;
     }
 

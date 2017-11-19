@@ -6,7 +6,7 @@ public class Asentence {
     private final String corr;
 
     public Asentence(){
-        this.id = 1;
+        this.id = 0;
         this.acontent = "Test acontent 1";
         this.corr = "true";
     }

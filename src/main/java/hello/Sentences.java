@@ -2,26 +2,26 @@ package hello;
 
 public class Sentences {
 
-    private final int id;
-    private final String content;
-    private final String corr;
+    private final Asentence asentence;
+    private final Qsentence qsentence;
+    private final Nsentence nsentence;
 
-    public Sentences(int id){
-        this.id = id;
-        this.content = "Test";
-        this.corr = "true";
+    public Sentences(){
+        this.asentence = new Asentence();
+        this.qsentence = new Qsentence();
+        this.nsentence = new Nsentence();
     }
 
-    public int getId() {
-        return id;
+    public Asentence getAsentence() {
+        return asentence;
     }
 
-    public String getContent() {
-        return content;
+    public Qsentence getQsentence() {
+        return qsentence;
     }
 
-    public String getCorr() {
-        return corr;
+    public Nsentence getNsentence() {
+        return nsentence;
     }
 
 }

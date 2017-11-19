@@ -21,8 +21,8 @@ public class HelloWorldController {
     public @ResponseBody
     List<Word> sayHello(HttpServletResponse response) {
         response.setHeader("Access-Control-Allow-Origin", "*");
-        Word greeting1 = new Word();
-        Word greeting2 = new Word();
+        Word greeting1 = new Word("pleasant");
+        Word greeting2 = new Word("brilliant");
         List<Word> list = new ArrayList<>();
         list.add(greeting1);
         list.add(greeting2);
