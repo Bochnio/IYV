@@ -10,21 +10,13 @@ import java.util.Date;
 @Entity // This tells Hibernate to make a table out of this class
 public class Dictionary {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE)
     private Integer id;
     private String word;
     private String translation;
-    private Date addDate;
-    private Date modDate;
+    private String addDate;
+    private String modDate;
     private Integer max_id;
-
-    public Dictionary(String word, String translation, Date addDate, Date modDate, Integer max_id) {
-        this.word = word;
-        this.translation = translation;
-        this.addDate = addDate;
-        this.modDate = modDate;
-        this.max_id = max_id;
-    }
 
     public Integer getId() {
         return id;
@@ -50,19 +42,19 @@ public class Dictionary {
         this.translation = translation;
     }
 
-    public Date getAddDate() {
+    public String getAddDate() {
         return addDate;
     }
 
-    public void setAddDate(Date addDate) {
+    public void setAddDate(String addDate) {
         this.addDate = addDate;
     }
 
-    public Date getModDate() {
+    public String getModDate() {
         return modDate;
     }
 
-    public void setModDate(Date modDate) {
+    public void setModDate(String modDate) {
         this.modDate = modDate;
     }
 

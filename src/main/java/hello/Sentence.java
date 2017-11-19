@@ -1,6 +1,14 @@
 package hello;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity // This tells Hibernate to make a table out of this class
 public class Sentence {
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
 
     private Integer id;
     private Integer word_id;
@@ -8,15 +16,6 @@ public class Sentence {
     private Integer sent_id;
     private String sent_type;
     private String sent_corr;
-
-    public Sentence(Integer id, Integer word_id, String sent_cont, Integer sent_id, String sent_type, String sent_corr) {
-        this.id = id;
-        this.word_id = word_id;
-        this.sent_cont = sent_cont;
-        this.sent_id = sent_id;
-        this.sent_type = sent_type;
-        this.sent_corr = sent_corr;
-    }
 
     public Integer getId() {
         return id;
