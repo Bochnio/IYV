@@ -32,6 +32,8 @@ public class MainController {
         dict.setMax_id(max_id);
         dictionaryRepository.save(dict);
         return "Saved";
+
+
     }
 
     @GetMapping(path="/all")
