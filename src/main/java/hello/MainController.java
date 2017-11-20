@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import java.io.Console;
+import java.util.List;
 
 import hello.Dictionary;
 import hello.DictionaryRepository;
@@ -44,7 +45,7 @@ public class MainController {
         sentAff.setWordId(dict.getId());
         sentAff.setSentCont("");
         sentAff.setSentId(0);
-        sentAff.setSent_type("AFF");
+        sentAff.setSentType("AFF");
 
         sentenceRepository.save(sentAff);
 
@@ -52,47 +53,26 @@ public class MainController {
         sentQue.setWordId(dict.getId());
         sentQue.setSentCont("");
         sentQue.setSentId(1);
-        sentQue.setSent_type("QUE");
+        sentQue.setSentType("QUE");
         sentenceRepository.save(sentQue);
 
         Sentence sentNeg = new Sentence();
         sentNeg.setWordId(dict.getId());
         sentNeg.setSentCont("");
         sentNeg.setSentId(2);
-        sentNeg.setSent_type("NEG");
+        sentNeg.setSentType("NEG");
         sentenceRepository.save(sentNeg);
 
         Synonym synonym = new Synonym();
-        synonym.setWord_id(dict.getId());
-        synonym.setSyn_cont("");
+        synonym.setWordId(dict.getId());
+        synonym.setSynCont("");
         synonymRepository.save(synonym);
-
-        //Kod do listowania
-        //For po findAll Dictionaryi i budować po kolei obiekty word
-
-        //dictionaryRepository.findOne(123);
-
-        //Update robi się przez save
-        // dictionaryRepository.findOne()
-
-        // Select id... -> findByWord() -> spring data
-
-        // Utworzenie obiektu z kilku tabelek
-
-        // Notatki: Spring data
-
-        //JPA/Hibernate one-to-many relationship
-
-        //Utworzyć sentenceRepository
 
     }
 
+    //Metoda testowa do wyszukiwania ID
     @GetMapping(path="/selectId") // Map ONLY GET Requests
     public @ResponseBody String selectWord () {
-
-        //Dictionary dictionary = dictionaryRepository.findByWord(word);
-        //int id = dict.findByWord(String word);
-        //int id = dict.findByWord;
 
         Dictionary result;
         result = dictionaryRepository.findByWord("pleasant");
@@ -112,6 +92,39 @@ public class MainController {
         sentence = sentenceRepository.findByWordIdAndSentId(dictionary.getId(), sent_id);
         sentence.setSentCont(sent_cont);
         sentenceRepository.save(sentence);
+    }
+
+    @GetMapping(path="/updateSentenceCorrectness")
+    public @ResponseBody void updateSentenceCorrectness (@RequestParam String word, @RequestParam String sentCorr, @RequestParam Integer sentId) {
+
+        Dictionary dictionary;
+        dictionary = dictionaryRepository.findByWord(word);
+
+        Sentence sentence;
+        sentence = sentenceRepository.findByWordIdAndSentId(dictionary.getId(), sentId);
+        sentence.setSentCorr(sentCorr);
+
+        System.out.println("sentCorr zdania ->" + sentence.getSentCorr() + "<- ID zdania: ->" + sentence.getId() + "<-");
+
+        sentenceRepository.save(sentence);
+    }
+
+    @GetMapping(path="/deleteWord")
+    public @ResponseBody void deleteWord (@RequestParam String word) {
+
+        Dictionary dictionary;
+        dictionary = dictionaryRepository.findByWord(word);
+
+        List<Sentence> sentence;
+        sentence = sentenceRepository.findAllByWordId(dictionary.getId());
+        sentenceRepository.delete(sentence);
+
+        Synonym synonym;
+        synonym = synonymRepository.findByWordId(dictionary.getId());
+        synonymRepository.delete(synonym);
+
+        dictionaryRepository.delete(dictionary);
+
     }
 
     @GetMapping(path="/all")
