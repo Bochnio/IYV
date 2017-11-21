@@ -1,25 +1,31 @@
 package hello;
 
 public class Asentence {
-    private final int id;
-    private final String acontent;
-    private final String corr;
-
-    public Asentence(){
-        this.id = 0;
-        this.acontent = "Test acontent 1";
-        this.corr = "true";
-    }
+    private int id;
+    private String acontent;
+    private String corr;
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getAcontent() {
         return acontent;
     }
 
+    public void setAcontent(String acontent) {
+        this.acontent = acontent;
+    }
+
     public String getCorr() {
         return corr;
+    }
+
+    public void setCorr(String corr) {
+        this.corr = corr;
     }
 }

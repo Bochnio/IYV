@@ -1,25 +1,31 @@
 package hello;
 
 public class Qsentence {
-    private final int id;
-    private final String qcontent;
-    private final String corr;
-
-    public Qsentence(){
-        this.id = 1;
-        this.qcontent = "Test qcontent 2";
-        this.corr = "true";
-    }
+    private int id;
+    private String qcontent;
+    private String corr;
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getQcontent() {
         return qcontent;
     }
 
+    public void setQcontent(String qcontent) {
+        this.qcontent = qcontent;
+    }
+
     public String getCorr() {
         return corr;
+    }
+
+    public void setCorr(String corr) {
+        this.corr = corr;
     }
 }

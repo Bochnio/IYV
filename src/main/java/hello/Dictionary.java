@@ -1,11 +1,9 @@
 package hello;
 
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.util.Date;
 
 @Entity // This tells Hibernate to make a table out of this class
 public class Dictionary {
@@ -16,7 +14,7 @@ public class Dictionary {
     private String translation;
     private String addDate;
     private String modDate;
-    private Integer max_id;
+    private Integer maxId;
 
     public Integer getId() {
         return id;
@@ -58,11 +56,13 @@ public class Dictionary {
         this.modDate = modDate;
     }
 
-    public Integer getMax_id() {
-        return max_id;
+    public Integer getMaxId() {
+        return maxId;
     }
 
-    public void setMax_id(Integer max_id) {
-        this.max_id = max_id;
+    public void setMaxId(Integer maxId) {
+        this.maxId = maxId;
     }
+
+    //TODO: one-to-many List<Sentence>
 }

@@ -1,19 +1,15 @@
 package hello;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import java.io.Console;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-
-import hello.Dictionary;
-import hello.DictionaryRepository;
-import hello.Sentence;
-import hello.SentenceRepository;
-
 
 
 @Controller    // This means that this class is a Controller
@@ -28,7 +24,6 @@ public class MainController {
     @Autowired
     private SynonymRepository synonymRepository;
 
-
     @GetMapping(path="/addNewWord") // Map ONLY GET Requests
     public @ResponseBody void addNewWord (@RequestParam String word, @RequestParam String translation, @RequestParam String addDate, @RequestParam String modDate) {
 
@@ -37,7 +32,7 @@ public class MainController {
         dict.setTranslation(translation);
         dict.setAddDate(addDate);
         dict.setModDate(modDate);
-        dict.setMax_id(2);
+        dict.setMaxId(2);
 
         dictionaryRepository.save(dict);
 
@@ -46,7 +41,7 @@ public class MainController {
         sentAff.setSentCont("");
         sentAff.setSentId(0);
         sentAff.setSentType("AFF");
-
+        sentAff.setNo(1);
         sentenceRepository.save(sentAff);
 
         Sentence sentQue = new Sentence();
@@ -54,6 +49,7 @@ public class MainController {
         sentQue.setSentCont("");
         sentQue.setSentId(1);
         sentQue.setSentType("QUE");
+        sentQue.setNo(1);
         sentenceRepository.save(sentQue);
 
         Sentence sentNeg = new Sentence();
@@ -61,24 +57,13 @@ public class MainController {
         sentNeg.setSentCont("");
         sentNeg.setSentId(2);
         sentNeg.setSentType("NEG");
+        sentNeg.setNo(1);
         sentenceRepository.save(sentNeg);
 
         Synonym synonym = new Synonym();
         synonym.setWordId(dict.getId());
         synonym.setSynCont("");
         synonymRepository.save(synonym);
-
-    }
-
-    //Metoda testowa do wyszukiwania ID
-    @GetMapping(path="/selectId") // Map ONLY GET Requests
-    public @ResponseBody String selectWord () {
-
-        Dictionary result;
-        result = dictionaryRepository.findByWord("pleasant");
-        result.setWord("Fajny");
-        dictionaryRepository.save(result);
-        return result.getTranslation();
 
     }
 
@@ -115,9 +100,9 @@ public class MainController {
         Dictionary dictionary;
         dictionary = dictionaryRepository.findByWord(word);
 
-        List<Sentence> sentence;
-        sentence = sentenceRepository.findAllByWordId(dictionary.getId());
-        sentenceRepository.delete(sentence);
+        List<Sentence> sentenceList;
+        sentenceList = sentenceRepository.findAllByWordId(dictionary.getId());
+        sentenceRepository.delete(sentenceList);
 
         Synonym synonym;
         synonym = synonymRepository.findByWordId(dictionary.getId());
@@ -127,9 +112,102 @@ public class MainController {
 
     }
 
+    @Controller
+    @RequestMapping("/sendAllWords")
+    public class HelloWorldController {
+        @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+        public @ResponseBody List<Word> sayHello(HttpServletResponse response) {
+
+            response.setHeader("Access-Control-Allow-Origin", "*");
+            Iterable <Dictionary> dictionaryList;
+            List <Sentence> wordSentences;
+            Synonym synonym;
+            List<Word> wordList = new ArrayList<>();
+
+            dictionaryList = dictionaryRepository.findAll();
+
+            for (Iterator<Dictionary> i = dictionaryList.iterator(); i.hasNext();){
+                Word word = new Word();
+                List <Sentences> sentencesList = new ArrayList<>();
+                Synon synon = new Synon();
+                Dictionary dict;
+                dict = i.next();
+                word.setEngForm(dict.getWord());
+                word.setPlForm(dict.getTranslation());
+
+                //Zliczanie ile słowo ma zdań
+                wordSentences = sentenceRepository.findAllByWordId(dict.getId());
+                int sentenceCounter = wordSentences.size();
+
+                //Petla w której tworzone są kolejne obiekty typu Sentences
+                for(int k = 1; k <= sentenceCounter/3; k++){
+
+                    Asentence asentence = new Asentence();
+                    Qsentence qsentence = new Qsentence();
+                    Nsentence nsentence = new Nsentence();
+                    Sentence sentence;
+
+                    sentence = sentenceRepository.findByWordIdAndSentTypeAndNo(dict.getId(), "AFF" ,k);
+
+                    asentence.setId(sentence.getSentId());
+                    asentence.setAcontent(sentence.getSentCont());
+                    asentence.setCorr(sentence.getSentCorr());
+
+                    sentence = sentenceRepository.findByWordIdAndSentTypeAndNo(dict.getId(), "QUE" ,k);
+
+                    qsentence.setId(sentence.getSentId());
+                    qsentence.setQcontent(sentence.getSentCont());
+                    qsentence.setCorr(sentence.getSentCorr());
+
+                    sentence = sentenceRepository.findByWordIdAndSentTypeAndNo(dict.getId(), "NEG" ,k);
+
+                    nsentence.setId(sentence.getSentId());
+                    nsentence.setNcontent(sentence.getSentCont());
+                    nsentence.setCorr(sentence.getSentCorr());
+
+                    Sentences sentences = new Sentences(k, asentence, qsentence, nsentence);
+
+                    sentencesList.add(sentences);
+
+                    }
+
+                word.setSentences(sentencesList);
+                //Ustawianie synonimu
+                synonym = synonymRepository.findByWordId(dict.getId());
+                synon.setSyncontent(synonym.getSynCont());
+                synon.setCorr(synonym.getSynCorr());
+                word.setSynonyms(synon);
+
+                //Ustawiania dat
+                word.setAddDate(dict.getAddDate());
+                word.setModDate(dict.getModDate());
+
+                //Ustawianie maxID
+                word.setMaxID(dict.getMaxId());
+
+                //Dodanie słowa do listy
+                wordList.add(word);
+                }
+
+            return wordList;
+            }
+        }
+
     @GetMapping(path="/all")
     public @ResponseBody Iterable<Sentence> getAllWords() {
         // This returns a JSON or XML with the users
         return sentenceRepository.findAll();
+    }
+
+    //Metoda testowa do wyszukiwania ID
+    @GetMapping(path="/selectId") // Map ONLY GET Requests
+    public @ResponseBody String selectWord () {
+
+        Dictionary result;
+        result = dictionaryRepository.findByWord("pleasant");
+        result.setWord("Fajny");
+        dictionaryRepository.save(result);
+        return result.getTranslation();
+
     }
 }

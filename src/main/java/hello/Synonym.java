@@ -8,12 +8,11 @@ import javax.persistence.Id;
 @Entity // This tells Hibernate to make a table out of this class
 public class Synonym {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
-    private Integer word_id;
-    private String syn_cont;
-    private String syn_corr;
+    private Integer wordId;
+    private String synCont;
+    private String synCorr;
 
     public Integer getId() {
         return id;
@@ -23,27 +22,27 @@ public class Synonym {
         this.id = id;
     }
 
-    public Integer getWord_id() {
-        return word_id;
+    public Integer getWordId() {
+        return wordId;
     }
 
-    public void setWord_id(Integer word_id) {
-        this.word_id = word_id;
+    public void setWordId(Integer wordId) {
+        this.wordId = wordId;
     }
 
-    public String getSyn_cont() {
-        return syn_cont;
+    public String getSynCont() {
+        return synCont;
     }
 
-    public void setSyn_cont(String syn_cont) {
-        this.syn_cont = syn_cont;
+    public void setSynCont(String syn_cont) {
+        this.synCont = syn_cont;
     }
 
-    public String getSyn_corr() {
-        return syn_corr;
+    public String getSynCorr() {
+        return synCorr;
     }
 
-    public void setSyn_corr(String syn_corr) {
-        this.syn_corr = syn_corr;
+    public void setSynCorr(String syn_corr) {
+        this.synCorr = syn_corr;
     }
 }
