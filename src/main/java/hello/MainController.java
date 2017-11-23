@@ -306,4 +306,12 @@ public class MainController {
         return result.getTranslation();
 
     }
+
+    //Metoda testowa do wyszukiwania ID
+    @GetMapping(path="/search")
+    public @ResponseBody void selectWord (Integer par1, Integer par2, Integer par3) {
+
+        System.out.println("> par1: " + par1 + " par2: " + par2 + " par3: " + par3 + " <");
+
+    }
 }
