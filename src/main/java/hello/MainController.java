@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 
 @Controller    // This means that this class is a Controller
@@ -24,7 +25,99 @@ public class MainController {
     @Autowired
     private SynonymRepository synonymRepository;
 
-    @GetMapping(path="/addNewWord") // Map ONLY GET Requests
+    private List<Word> prepareWordList (){
+        Iterable <Dictionary> dictionaryList;
+        List <Sentence> wordSentences;
+        Synonym synonym;
+        List<Word> wordList = new ArrayList<>();
+
+        dictionaryList = dictionaryRepository.findAll();
+
+        for (Iterator<Dictionary> i = dictionaryList.iterator(); i.hasNext();){
+            Word word = new Word();
+            List <Sentences> sentencesList = new ArrayList<>();
+            Synon synon = new Synon();
+            Dictionary dict;
+            dict = i.next();
+            word.setEngForm(dict.getWord());
+            word.setPlForm(dict.getTranslation());
+
+            //Zliczanie ile słowo ma zdań
+            wordSentences = sentenceRepository.findAllByWordId(dict.getId());
+            int sentenceCounter = wordSentences.size();
+
+            //Petla w której tworzone są kolejne obiekty typu Sentences
+            for(int k = 1; k <= sentenceCounter/3; k++){
+
+                Asentence asentence = new Asentence();
+                Qsentence qsentence = new Qsentence();
+                Nsentence nsentence = new Nsentence();
+                Sentence sentence;
+                String aSenCorr, qSenCorr, nSenCorr;
+
+                sentence = sentenceRepository.findByWordIdAndSentTypeAndNo(dict.getId(), "AFF" ,k);
+
+                asentence.setId(sentence.getSentId());
+                asentence.setAcontent(sentence.getSentCont());
+                aSenCorr = sentence.getSentCorr();
+                //Dla przeglądarek "" == !TRUE
+                if(aSenCorr == null){aSenCorr = "null";}
+                if(aSenCorr != null && aSenCorr.equals("false")){aSenCorr = null;}
+                asentence.setCorr(aSenCorr);
+
+                sentence = sentenceRepository.findByWordIdAndSentTypeAndNo(dict.getId(), "QUE" ,k);
+
+                qsentence.setId(sentence.getSentId());
+                qsentence.setQcontent(sentence.getSentCont());
+                qSenCorr = sentence.getSentCorr();
+                //Dla przeglądarek "" == !TRUE
+                if(qSenCorr == null){qSenCorr = "null";}
+                if(qSenCorr != null && qSenCorr.equals("false")){qSenCorr = null;}
+                qsentence.setCorr(qSenCorr);
+
+                sentence = sentenceRepository.findByWordIdAndSentTypeAndNo(dict.getId(), "NEG" ,k);
+
+                nsentence.setId(sentence.getSentId());
+                nsentence.setNcontent(sentence.getSentCont());
+                nSenCorr = sentence.getSentCorr();
+                //Dla przeglądarek "" == !TRUE
+                if(nSenCorr == null){nSenCorr = "null";}
+                if(nSenCorr != null && nSenCorr.equals("false")){nSenCorr = null;}
+                nsentence.setCorr(nSenCorr);
+
+                Sentences sentences = new Sentences(k, asentence, qsentence, nsentence);
+
+                sentencesList.add(sentences);
+
+            }
+
+            word.setSentences(sentencesList);
+            //Ustawianie synonimu
+            synonym = synonymRepository.findByWordId(dict.getId());
+            synon.setSyncontent(synonym.getSynCont());
+            String synCorr;
+            //Dla przeglądarek "" == !TRUE
+            synCorr = synonym.getSynCorr();
+            if(synCorr == null){synCorr = "null";}
+            if(synCorr != null && synCorr.equals("false")){synCorr = null;}
+            synon.setCorr(synCorr);
+            word.setSynonyms(synon);
+
+            //Ustawiania dat
+            word.setAddDate(dict.getAddDate());
+            word.setModDate(dict.getModDate());
+
+            //Ustawianie maxID
+            word.setMaxID(dict.getMaxId());
+
+            //Dodanie słowa do listy
+            wordList.add(word);
+        }
+
+        return wordList;
+    }
+
+    @GetMapping(path="/addNewWord")
     public @ResponseBody void addNewWord (@RequestParam String word, @RequestParam String translation, @RequestParam String addDate, @RequestParam String modDate) {
 
         Dictionary dict = new Dictionary();
@@ -89,8 +182,6 @@ public class MainController {
         sentence = sentenceRepository.findByWordIdAndSentId(dictionary.getId(), sentId);
         sentence.setSentCorr(sentCorr);
 
-        System.out.println("sentCorr zdania ->" + sentence.getSentCorr() + "<- ID zdania: ->" + sentence.getId() + "<-");
-
         sentenceRepository.save(sentence);
     }
 
@@ -119,93 +210,9 @@ public class MainController {
         public @ResponseBody List<Word> sendAllWords(HttpServletResponse response) {
 
             response.setHeader("Access-Control-Allow-Origin", "*");
-            Iterable <Dictionary> dictionaryList;
-            List <Sentence> wordSentences;
-            Synonym synonym;
-            List<Word> wordList = new ArrayList<>();
+            List<Word> wordList;
 
-            dictionaryList = dictionaryRepository.findAll();
-
-            for (Iterator<Dictionary> i = dictionaryList.iterator(); i.hasNext();){
-                Word word = new Word();
-                List <Sentences> sentencesList = new ArrayList<>();
-                Synon synon = new Synon();
-                Dictionary dict;
-                dict = i.next();
-                word.setEngForm(dict.getWord());
-                word.setPlForm(dict.getTranslation());
-
-                //Zliczanie ile słowo ma zdań
-                wordSentences = sentenceRepository.findAllByWordId(dict.getId());
-                int sentenceCounter = wordSentences.size();
-
-                //Petla w której tworzone są kolejne obiekty typu Sentences
-                for(int k = 1; k <= sentenceCounter/3; k++){
-
-                    Asentence asentence = new Asentence();
-                    Qsentence qsentence = new Qsentence();
-                    Nsentence nsentence = new Nsentence();
-                    Sentence sentence;
-                    String aSenCorr, qSenCorr, nSenCorr;
-
-                    sentence = sentenceRepository.findByWordIdAndSentTypeAndNo(dict.getId(), "AFF" ,k);
-
-                    asentence.setId(sentence.getSentId());
-                    asentence.setAcontent(sentence.getSentCont());
-                    aSenCorr = sentence.getSentCorr();
-                    //Dla przeglądarek "" == !TRUE
-                    if(aSenCorr == null){aSenCorr = "null";}
-                    if(aSenCorr != null && aSenCorr.equals("false")){aSenCorr = null;}
-                    asentence.setCorr(aSenCorr);
-
-                    sentence = sentenceRepository.findByWordIdAndSentTypeAndNo(dict.getId(), "QUE" ,k);
-
-                    qsentence.setId(sentence.getSentId());
-                    qsentence.setQcontent(sentence.getSentCont());
-                    qSenCorr = sentence.getSentCorr();
-                    //Dla przeglądarek "" == !TRUE
-                    if(qSenCorr == null){qSenCorr = "null";}
-                    if(qSenCorr != null && qSenCorr.equals("false")){qSenCorr = null;}
-                    qsentence.setCorr(qSenCorr);
-
-                    sentence = sentenceRepository.findByWordIdAndSentTypeAndNo(dict.getId(), "NEG" ,k);
-
-                    nsentence.setId(sentence.getSentId());
-                    nsentence.setNcontent(sentence.getSentCont());
-                    nSenCorr = sentence.getSentCorr();
-                    //Dla przeglądarek "" == !TRUE
-                    if(nSenCorr == null){nSenCorr = "null";}
-                    if(nSenCorr != null && nSenCorr.equals("false")){nSenCorr = null;}
-                    nsentence.setCorr(nSenCorr);
-
-                    Sentences sentences = new Sentences(k, asentence, qsentence, nsentence);
-
-                    sentencesList.add(sentences);
-
-                    }
-
-                word.setSentences(sentencesList);
-                //Ustawianie synonimu
-                synonym = synonymRepository.findByWordId(dict.getId());
-                synon.setSyncontent(synonym.getSynCont());
-                String synCorr;
-                //Dla przeglądarek "" == !TRUE
-                synCorr = synonym.getSynCorr();
-                if(synCorr == null){synCorr = "null";}
-                if(synCorr != null && synCorr.equals("false")){synCorr = null;}
-                synon.setCorr(synCorr);
-                word.setSynonyms(synon);
-
-                //Ustawiania dat
-                word.setAddDate(dict.getAddDate());
-                word.setModDate(dict.getModDate());
-
-                //Ustawianie maxID
-                word.setMaxID(dict.getMaxId());
-
-                //Dodanie słowa do listy
-                wordList.add(word);
-                }
+            wordList = prepareWordList();
 
             return wordList;
             }
@@ -285,7 +292,36 @@ public class MainController {
         synonym.setSynCorr(synCorr);
         synonymRepository.save(synonym);
 
-        System.out.println(synonym.getSynCorr());
+    }
+
+    //Metoda testowa do wyszukiwania ID
+    @GetMapping(path="/search")
+    public @ResponseBody List<Word> search (HttpServletResponse response, String findword, Integer onlywrong, Integer onlyok, Integer notvalid, String adddate, String moddate) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
+
+        System.out.println("> findword: " + findword + " onlywrong: " + onlywrong + " onlyok: " + onlyok + " notvalid: " + notvalid + " adddate: " + adddate + " moddate: " + moddate + " <");
+
+        List<Word> wordList;
+        wordList = prepareWordList();
+
+        for (Iterator<Word> i = wordList.iterator(); i.hasNext();) {
+            Word word;
+            word = i.next();
+
+            if (findword != null){
+                if (!Objects.equals(word.getEngForm(), findword)){
+                    i.remove();
+                }
+            }
+
+//            if (onlywrong != 0){
+//                for (Iterator<Word> i = wordList.iterator(); i.hasNext();) {
+//
+//                }
+//            }
+        }
+
+        return wordList;
 
     }
 
@@ -297,21 +333,14 @@ public class MainController {
 
     //Metoda testowa do wyszukiwania ID
     @GetMapping(path="/selectId") // Map ONLY GET Requests
-    public @ResponseBody String selectWord () {
+    public @ResponseBody List<Word> selectWord () {
 
-        Dictionary result;
-        result = dictionaryRepository.findByWord("pleasant");
-        result.setWord("Fajny");
-        dictionaryRepository.save(result);
-        return result.getTranslation();
+        List<Word> wordList;
 
-    }
+        wordList = prepareWordList();
 
-    //Metoda testowa do wyszukiwania ID
-    @GetMapping(path="/search")
-    public @ResponseBody void selectWord (Integer par1, Integer par2, Integer par3) {
-
-        System.out.println("> par1: " + par1 + " par2: " + par2 + " par3: " + par3 + " <");
+        return wordList;
 
     }
+
 }
