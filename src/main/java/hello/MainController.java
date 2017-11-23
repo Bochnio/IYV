@@ -118,7 +118,8 @@ public class MainController {
     }
 
     @GetMapping(path="/addNewWord")
-    public @ResponseBody void addNewWord (@RequestParam String word, @RequestParam String translation, @RequestParam String addDate, @RequestParam String modDate) {
+    public @ResponseBody void addNewWord (HttpServletResponse response, String word, String translation, String addDate, String modDate) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
 
         Dictionary dict = new Dictionary();
         dict.setWord(word);
@@ -161,8 +162,8 @@ public class MainController {
     }
 
     @GetMapping(path="/updateSentenceContent") // Map ONLY GET Requests
-    public @ResponseBody void updateSentenceContent (@RequestParam String word, @RequestParam String sent_cont, @RequestParam Integer sent_id) {
-
+    public @ResponseBody void updateSentenceContent (HttpServletResponse response, String word, String sent_cont, Integer sent_id) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
         Dictionary dictionary;
         dictionary = dictionaryRepository.findByWord(word);
 
@@ -173,8 +174,8 @@ public class MainController {
     }
 
     @GetMapping(path="/updateSentenceCorrectness")
-    public @ResponseBody void updateSentenceCorrectness (@RequestParam String word, @RequestParam String sentCorr, @RequestParam Integer sentId) {
-
+    public @ResponseBody void updateSentenceCorrectness (HttpServletResponse response, String word, String sentCorr, Integer sentId) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
         Dictionary dictionary;
         dictionary = dictionaryRepository.findByWord(word);
 
@@ -186,8 +187,8 @@ public class MainController {
     }
 
     @GetMapping(path="/deleteWord")
-    public @ResponseBody void deleteWord (@RequestParam String word) {
-
+    public @ResponseBody void deleteWord (HttpServletResponse response, String word) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
         Dictionary dictionary;
         dictionary = dictionaryRepository.findByWord(word);
 
@@ -208,7 +209,6 @@ public class MainController {
     public class HelloWorldController {
         @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
         public @ResponseBody List<Word> sendAllWords(HttpServletResponse response) {
-
             response.setHeader("Access-Control-Allow-Origin", "*");
             List<Word> wordList;
 
@@ -219,8 +219,8 @@ public class MainController {
         }
 
     @GetMapping(path="/addNewPackage")
-    public @ResponseBody void addNewPackage (@RequestParam String word) {
-
+    public @ResponseBody void addNewPackage (HttpServletResponse response, String word) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
         Dictionary dict;
         dict = dictionaryRepository.findByWord(word);
         List <Sentence> wordSentences;
@@ -257,8 +257,8 @@ public class MainController {
     }
 
     @GetMapping(path="/updateTranslation")
-    public @ResponseBody void deleteWord (@RequestParam String word, String translation) {
-
+    public @ResponseBody void deleteWord (HttpServletResponse response, String word, String translation) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
         Dictionary dictionary;
         dictionary = dictionaryRepository.findByWord(word);
 
@@ -269,8 +269,8 @@ public class MainController {
     }
 
     @GetMapping(path="/updateSynonymContent")
-    public @ResponseBody void updateSynonymContent (@RequestParam String word, String synCont) {
-
+    public @ResponseBody void updateSynonymContent (HttpServletResponse response, String word, String synCont) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
         Dictionary dictionary;
         dictionary = dictionaryRepository.findByWord(word);
 
@@ -282,8 +282,8 @@ public class MainController {
     }
 
     @GetMapping(path="/updateSynonymCorrectness")
-    public @ResponseBody void updateSynonymCorrectness (@RequestParam String word, String synCorr) {
-
+    public @ResponseBody void updateSynonymCorrectness (HttpServletResponse response, String word, String synCorr) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
         Dictionary dictionary;
         dictionary = dictionaryRepository.findByWord(word);
 
@@ -308,17 +308,106 @@ public class MainController {
             Word word;
             word = i.next();
 
+            System.out.println("Opracowuję słowo: " + word.getEngForm() + " <--");
+
+            //Fitlracja po słowie
             if (findword != null){
+                System.out.println("Wszedłem: findword != null");
                 if (!Objects.equals(word.getEngForm(), findword)){
+                    System.out.println("findWord -> usuwam!");
                     i.remove();
                 }
             }
 
-//            if (onlywrong != 0){
-//                for (Iterator<Word> i = wordList.iterator(); i.hasNext();) {
-//
-//                }
-//            }
+            //Filtracja słów, które mają choć jeden błąd
+            if (onlywrong != 0){
+                System.out.println("Wszedłem: onlywrong != 0 " + word.getEngForm());
+                List<Sentences> sentencesList;
+                sentencesList = word.getSentences();
+                int falseCounter = 0;
+                //Pętla po wszystkich zdaniach w ramach paczki
+                for (Iterator<Sentences> s = sentencesList.iterator(); s.hasNext();) {
+                    Sentences sentences = s.next();
+                    System.out.println("Wszedłem: onlywrong sentencje != 0");
+                    if (sentences.getAsentence().getCorr() == null || sentences.getQsentence().getCorr() == null ||  sentences.getNsentence().getCorr() == null) {
+                        System.out.println("1: " + sentences.getAsentence().getCorr() + " 2: " + sentences.getQsentence().getCorr() + " 3: " + sentences.getNsentence().getCorr());
+                        falseCounter++;
+                    }
+                }
+                if (word.getSynonyms().getCorr() == null){
+                    falseCounter++;
+                }
+                if (falseCounter==0){
+                    System.out.println("onlyWrong -> usuwam!");
+                    i.remove();
+                }
+            }
+
+            //Filtracja słów, które mają wszystkie zdania poprawne
+            if (onlyok != 0){
+                System.out.println("Wszedłem: onlyok != 0 " + word.getEngForm());
+                List<Sentences> sentencesList;
+                sentencesList = word.getSentences();
+                int falseCounter = 0;
+                //Pętla po wszystkich zdaniach w ramach paczki
+                for (Iterator<Sentences> s = sentencesList.iterator(); s.hasNext();) {
+                    Sentences sentences = s.next();
+                    System.out.println("Wszedłem: onlyok sentencje != 0");
+                    if (sentences.getAsentence().getCorr() == null || Objects.equals(sentences.getAsentence().getCorr(),"null") ||  sentences.getQsentence().getCorr() == null || Objects.equals(sentences.getQsentence().getCorr(),"null") || sentences.getNsentence().getCorr() == null || Objects.equals(sentences.getNsentence().getCorr(),"null")) {
+                        System.out.println("1: " + sentences.getAsentence().getCorr() + " 2: " + sentences.getQsentence().getCorr() + " 3: " + sentences.getNsentence().getCorr());
+                        falseCounter++;
+                    }
+                }
+                if (word.getSynonyms().getCorr() == null || Objects.equals(word.getSynonyms().getCorr(),"null")){
+                    falseCounter++;
+                }
+                if (falseCounter!=0){
+                    i.remove();
+                }
+            }
+
+            //Filtracja słów, które mają choć jeden niesprawdzony
+            if (notvalid!= 0){
+                System.out.println("Wszedłem: notvalid != 0 " + word.getEngForm());
+                List<Sentences> sentencesList;
+                sentencesList = word.getSentences();
+                int falseCounter = 0;
+                //Pętla po wszystkich zdaniach w ramach paczki
+                for (Iterator<Sentences> s = sentencesList.iterator(); s.hasNext();) {
+                    Sentences sentences = s.next();
+                    System.out.println("Wszedłem: onotvalid sentencje != 0");
+                    if (Objects.equals(sentences.getAsentence().getCorr(),"null") || Objects.equals(sentences.getQsentence().getCorr(),"null") ||  Objects.equals(sentences.getNsentence().getCorr(),"null")) {
+                        System.out.println("1: " + sentences.getAsentence().getCorr() + " 2: " + sentences.getQsentence().getCorr() + " 3: " + sentences.getNsentence().getCorr());
+                        falseCounter++;
+                    }
+                }
+                if (Objects.equals(word.getSynonyms().getCorr(), "null")){
+                    falseCounter++;
+                }
+                if (falseCounter==0){
+                    System.out.println("onlyWrong -> usuwam!");
+                    i.remove();
+                }
+            }
+
+            //Fitlracja po dacie dodania
+            if (adddate != null){
+                System.out.println("adddate != null");
+                if (!Objects.equals(word.getAddDate(), adddate)){
+                    System.out.println("adddate -> usuwam!");
+                    i.remove();
+                }
+            }
+
+            //Fitlracja po słowie
+            if (moddate != null){
+                System.out.println("Wszedłem: moddate != null");
+                if (!Objects.equals(word.getModDate(), moddate)){
+                    System.out.println("moddate -> usuwam!");
+                    i.remove();
+                }
+            }
+
         }
 
         return wordList;

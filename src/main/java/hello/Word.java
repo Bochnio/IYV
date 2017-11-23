@@ -13,16 +13,6 @@ public class Word {
     private String modDate;
     private Integer maxID;
 
-//    public Word(String word) {
-//        this.engForm = "word";
-//        this.plForm = "miły, uprzejmy, sympatyczny";
-//        this.sentences = new ArrayList<>();
-//        sentences.add(new Sentence());
-//        this.synonyms = new Synon();
-//        this.addDate = "2017-11-01";
-//        this.modDate = "2017-11-03";
-//        this.maxID = "2";
-//    }
 
     public String getEngForm() {
         return engForm;
