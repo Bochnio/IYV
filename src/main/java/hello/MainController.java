@@ -116,7 +116,7 @@ public class MainController {
     @RequestMapping("/sendAllWords")
     public class HelloWorldController {
         @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-        public @ResponseBody List<Word> sayHello(HttpServletResponse response) {
+        public @ResponseBody List<Word> sendAllWords(HttpServletResponse response) {
 
             response.setHeader("Access-Control-Allow-Origin", "*");
             Iterable <Dictionary> dictionaryList;
@@ -146,24 +146,37 @@ public class MainController {
                     Qsentence qsentence = new Qsentence();
                     Nsentence nsentence = new Nsentence();
                     Sentence sentence;
+                    String aSenCorr, qSenCorr, nSenCorr;
 
                     sentence = sentenceRepository.findByWordIdAndSentTypeAndNo(dict.getId(), "AFF" ,k);
 
                     asentence.setId(sentence.getSentId());
                     asentence.setAcontent(sentence.getSentCont());
-                    asentence.setCorr(sentence.getSentCorr());
+                    aSenCorr = sentence.getSentCorr();
+                    //Dla przeglądarek "" == !TRUE
+                    if(aSenCorr == null){aSenCorr = "null";}
+                    if(aSenCorr != null && aSenCorr.equals("false")){aSenCorr = null;}
+                    asentence.setCorr(aSenCorr);
 
                     sentence = sentenceRepository.findByWordIdAndSentTypeAndNo(dict.getId(), "QUE" ,k);
 
                     qsentence.setId(sentence.getSentId());
                     qsentence.setQcontent(sentence.getSentCont());
-                    qsentence.setCorr(sentence.getSentCorr());
+                    qSenCorr = sentence.getSentCorr();
+                    //Dla przeglądarek "" == !TRUE
+                    if(qSenCorr == null){qSenCorr = "null";}
+                    if(qSenCorr != null && qSenCorr.equals("false")){qSenCorr = null;}
+                    qsentence.setCorr(qSenCorr);
 
                     sentence = sentenceRepository.findByWordIdAndSentTypeAndNo(dict.getId(), "NEG" ,k);
 
                     nsentence.setId(sentence.getSentId());
                     nsentence.setNcontent(sentence.getSentCont());
-                    nsentence.setCorr(sentence.getSentCorr());
+                    nSenCorr = sentence.getSentCorr();
+                    //Dla przeglądarek "" == !TRUE
+                    if(nSenCorr == null){nSenCorr = "null";}
+                    if(nSenCorr != null && nSenCorr.equals("false")){nSenCorr = null;}
+                    nsentence.setCorr(nSenCorr);
 
                     Sentences sentences = new Sentences(k, asentence, qsentence, nsentence);
 
@@ -175,7 +188,12 @@ public class MainController {
                 //Ustawianie synonimu
                 synonym = synonymRepository.findByWordId(dict.getId());
                 synon.setSyncontent(synonym.getSynCont());
-                synon.setCorr(synonym.getSynCorr());
+                String synCorr;
+                //Dla przeglądarek "" == !TRUE
+                synCorr = synonym.getSynCorr();
+                if(synCorr == null){synCorr = "null";}
+                if(synCorr != null && synCorr.equals("false")){synCorr = null;}
+                synon.setCorr(synCorr);
                 word.setSynonyms(synon);
 
                 //Ustawiania dat
@@ -192,6 +210,84 @@ public class MainController {
             return wordList;
             }
         }
+
+    @GetMapping(path="/addNewPackage")
+    public @ResponseBody void addNewPackage (@RequestParam String word) {
+
+        Dictionary dict;
+        dict = dictionaryRepository.findByWord(word);
+        List <Sentence> wordSentences;
+        wordSentences = sentenceRepository.findAllByWordId(dict.getId());
+        int sentenceCounter = wordSentences.size();
+
+        Sentence sentAff = new Sentence();
+        sentAff.setWordId(dict.getId());
+        sentAff.setSentCont("");
+        sentAff.setSentId(dict.getMaxId()+1);
+        sentAff.setSentType("AFF");
+        sentAff.setNo(sentenceCounter/3+1);
+        sentenceRepository.save(sentAff);
+
+        Sentence sentQue = new Sentence();
+        sentQue.setWordId(dict.getId());
+        sentQue.setSentCont("");
+        sentQue.setSentId(dict.getMaxId()+2);
+        sentQue.setSentType("QUE");
+        sentQue.setNo(sentenceCounter/3+1);
+        sentenceRepository.save(sentQue);
+
+        Sentence sentNeg = new Sentence();
+        sentNeg.setWordId(dict.getId());
+        sentNeg.setSentCont("");
+        sentNeg.setSentId(dict.getMaxId()+3);
+        sentNeg.setSentType("NEG");
+        sentNeg.setNo(sentenceCounter/3+1);
+        sentenceRepository.save(sentNeg);
+
+        dict.setMaxId(dict.getMaxId()+3);
+        dictionaryRepository.save(dict);
+
+    }
+
+    @GetMapping(path="/updateTranslation")
+    public @ResponseBody void deleteWord (@RequestParam String word, String translation) {
+
+        Dictionary dictionary;
+        dictionary = dictionaryRepository.findByWord(word);
+
+        dictionary.setTranslation(translation);
+
+        dictionaryRepository.save(dictionary);
+
+    }
+
+    @GetMapping(path="/updateSynonymContent")
+    public @ResponseBody void updateSynonymContent (@RequestParam String word, String synCont) {
+
+        Dictionary dictionary;
+        dictionary = dictionaryRepository.findByWord(word);
+
+        Synonym synonym;
+        synonym = synonymRepository.findByWordId(dictionary.getId());
+        synonym.setSynCont(synCont);
+        synonymRepository.save(synonym);
+
+    }
+
+    @GetMapping(path="/updateSynonymCorrectness")
+    public @ResponseBody void updateSynonymCorrectness (@RequestParam String word, String synCorr) {
+
+        Dictionary dictionary;
+        dictionary = dictionaryRepository.findByWord(word);
+
+        Synonym synonym;
+        synonym = synonymRepository.findByWordId(dictionary.getId());
+        synonym.setSynCorr(synCorr);
+        synonymRepository.save(synonym);
+
+        System.out.println(synonym.getSynCorr());
+
+    }
 
     @GetMapping(path="/all")
     public @ResponseBody Iterable<Sentence> getAllWords() {
