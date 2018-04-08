@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html ng-app="vocabularyBuilder">
+<head>
+    <script src="angular.min.js"></script>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.css">
+    <script src="bootstrap/js/jquery-3.2.1.min.js"></script>
+    <script src="bootstrap/js/bootstrap.js"></script>
+    <script type="text/javascript" src="app.js"></script>
+    <link rel="Stylesheet" type="text/css" href="css/styles.css"/>
+</head>
+<body>
+    <!-- TO-DO: zastąpić własną dyrektywą z parametrem aktywnej zakładki? -->
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand">ExpandYourVocab!</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="index.html">Opracowane słowa</a></li>
+                <li><a href="mojeKonto.html">Moje konto</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="content" ng-controller="wordsController as wordsCtrl">
+        <div class="add-search">
+            <div class="add-search-element">
+            <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#myModal" ng-click="newEngWord='' ; newTranslation=''">
+                <span class="glyphicon glyphicon-plus-sign"></span>
+            </button>
+            <!-- Modal dodawania słowa -->
+                <div class="modal fade" id="myModal" role="dialog">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Dodaj nowe słowo</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="modal-title">
+                                    <form name="newWordForm">
+                                    <div class="modal-t" style="width:40px;">ENG:</div><!--
+                                !--><div class="modal-t" style="width:400px;"><input style="width:350px;" ng-model="newEngWord" required></div><!--
+                                !--><div class="modal-t" style="width:40px;">PL:</div><!--
+                                !--><div class="modal-t" style="width:400px;"><input style="width:350px;" ng-model="newTranslation" required></insert></div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div>
+                                <p style="margin-left: 20px; font-size: x-small" ng-show="newEngWord==='' || newTranslation===''">By dodać nowe słowo uzupełnij pola...</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" ng-show="newWordForm.$valid" ng-click="wordsCtrl.addWord(newEngWord, newTranslation)" data-dismiss="modal">Dodaj Słowo</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Zamknij</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="dropdown add-search-element">
+                <button type="button" class="btn btn-primary dropdown-toggle btn btn-default btn-sm" type="button" data-toggle="dropdown">
+                    <span class="glyphicon glyphicon-search"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href ng-click="findWord = 1">Znajdź słowo</a></li>
+                    <li><a href ng-click="onlyWrong = 1; onlyOk = 0; notValid = 0; wordsCtrl.search()">Zawiera niepoprawne</a></li>
+                    <li><a href ng-click="onlyOk = 1; onlyWrong = 0; notValid = 0; wordsCtrl.search()">Tylko poprawne</a></li>
+                    <li><a href ng-click="notValid = 1; onlyWrong = 0; onlyOk = 0; wordsCtrl.search()">Zawiera niesprawdzone</a></li>
+                    <li><a href ng-click="addDate = 1">Data dodania</a></li>
+                    <li><a href ng-click="modDate = 1">Data modyfikacji</a></li>
+                </ul>
+            </div>
+            <div class="search-element" ng-show="findWord === 1">
+                <div class="search-element-component">
+                    Słowo:
+                </div>
+                <div class="search-element-component">
+                    <input style="width:150px; border-width: 0px;" type="text" ng-model="findWordParam" ng-blur="wordsCtrl.search()">
+                </div>
+                <div class="search-element-component-x">
+                    <a class="deleteX" href ng-click="findWord = 0; findWordParam = null; wordsCtrl.search()">X</a>
+                </div>
+            </div>
+            <div class="search-element" ng-show="onlyWrong === 1">
+                <div class="search-element-component">
+                    Zawiera niepoprawne
+                </div>
+                <div class="search-element-component-x">
+                    <a class="deleteX" href ng-click="onlyWrong = 0; wordsCtrl.search()">X</a>
+                </div>
+            </div>
+            <div class="search-element" ng-show="onlyOk === 1">
+                <div class="search-element-component">
+                    Tylko poprawne
+                </div>
+                <div class="search-element-component-x">
+                    <a class="deleteX" href ng-click="onlyOk = 0; wordsCtrl.search()">X</a>
+                </div>
+            </div>
+            <div class="search-element" ng-show="notValid === 1">
+                <div class="search-element-component">
+                    Zawiera niesprawdzone
+                </div>
+                <div class="search-element-component-x">
+                    <a class="deleteX" href ng-click="notValid = 0; wordsCtrl.search()">X</a>
+                </div>
+            </div>
+            <div class="search-element" ng-show="addDate === 1">
+                <div class="search-element-component">
+                    Data dodania:
+                </div>
+                <div class="search-element-component">
+                    <input style="width:100px; border-width: 0px;" type="text" ng-model="addDateParam" ng-blur="wordsCtrl.search()">
+                </div>
+                <div class="search-element-component-x">
+                    <a class="deleteX" href ng-click="addDate = 0; addDateParam = null; wordsCtrl.search()">X</a>
+                </div>
+            </div>
+            <div class="search-element" ng-show="modDate === 1">
+                <div class="search-element-component">
+                    Data modyfikacji:
+                </div>
+                <div class="search-element-component">
+                    <input style="width:100px; border-width: 0px;" type="text" ng-model="modDateParam" ng-blur="wordsCtrl.search()">
+                </div>
+                <div class="search-element-component-x">
+                    <a class="deleteX" href ng-click="modDate = 0; modDateParam = null; wordsCtrl.search()">X</a>
+                </div>
+            </div>
+        </div>
+        <div class="div-title">
+            <p>Opracowane słownictwo:<p/>
+        </div>
+        <div class="words-container" ng-repeat="word in wordsCtrl.word | orderBy: 'engForm'">
+            <div class="word-title">
+                <div class="word-t ang-t" style="width:40px;">ENG:</div><!--
+                !--><div class="word-t ang-w" style="width:300px;">{{word.engForm}}</div><!--
+                !--><div class="word-t pl-t" style="width:35px;">PL:</div><!--
+                !--><div class="word-t pl-w" style="width:500px;"><input class="sentence-input" ng-model="word.plForm" ng-blur="wordsCtrl.updateSentenceTranslationValue(word.engForm, word.plForm)"></div><!--
+                !--><div class="word-t" style="width:35px;"><button ng-click="wordsCtrl.addSentences(word.engForm)" class="glyphicon glyphicon-plus-sign span-word-icon"></button></div><!--
+                !--><div class="word-t" style="width:35px;"><button class="glyphicon glyphicon-minus-sign span-word-icon" data-toggle="modal" data-target="#{{word.engForm}}"></button></div><!--
+                !--><div class="word-t" style="width:35px; margin-left: 5px"><div class="glyphicon glyphicon-question-sign span-word-icon" data-toggle="tooltip" data-placement="top" title="Data utworzenia: {{word.addDate}} Data modyfikacji: {{word.modDate}}"></div>
+            </div>
+                <!-- Modal usuwania słowa-->
+                <div class="modal fade" id="{{word.engForm}}" role="dialog">
+                    <div class="modal-dialog modal-md">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Usuń słowo</h4>
+                            </div>
+                            <div class="modal-body">
+                                <p>Czy jesteś pewny, że chcesz usunąć słowo {{word.engForm}}"?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" ng-click="wordsCtrl.removeWord(word.engForm)" data-dismiss="modal">Usuń słowo</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="word-status-title">
+                <div class="word-s" style="width:75px;">INCORR.</div><!--
+                !--><div class="word-s" style="width:75px;">CORR.</div>
+            </div>
+            <div class="senteces-container" ng-repeat="sentence in word.sentences">
+                <div class="sentence-title">
+                    <div class="sentence-t sentence-l" style="width:20px;">A:</div><!--
+                    !--><div class="sentence-t sentence-t-sentence" style="width:980px;"><input class="sentence-input" ng-model="sentence.asentence.acontent" ng-blur="wordsCtrl.updateSentenceContentValue(sentence.asentence.acontent, word.engForm, sentence.asentence.id)"></div><!--
+                    !--><div class="sentence-t" style="width:75px;"><input type="radio" name="{{wordsCtrl.returnString(word.engForm, sentence.asentence.id)}}" ng-checked="{{sentence.asentence.corr}}" ng-click="wordsCtrl.updateCorrectnessValue(true, word.engForm, sentence.asentence.id)"></div><!--
+                    !--><div class="sentence-t" style="width:75px;"><input type="radio" name="{{wordsCtrl.returnString(word.engForm, sentence.asentence.id)}}" ng-checked="{{!sentence.asentence.corr}}" ng-click="wordsCtrl.updateCorrectnessValue(false, word.engForm, sentence.asentence.id)"></div>
+                </div>
+                <div class="sentence-title">
+                    <div class="sentence-t sentence-l" style="width:20px;">Q:</div><!--
+                    !--><div class="sentence-t sentence-t-sentence" style="width:980px;"><input class="sentence-input" type="text" ng-model="sentence.qsentence.qcontent" ng-blur="wordsCtrl.updateSentenceContentValue(sentence.qsentence.qcontent, word.engForm, sentence.qsentence.id)"></div><!--
+                    !--><div class="sentence-t" style="width:75px;"><input type="radio" name="{{wordsCtrl.returnString(word.engForm, sentence.qsentence.id)}}" ng-checked="{{sentence.qsentence.corr}}" ng-click="wordsCtrl.updateCorrectnessValue(true, word.engForm, sentence.qsentence.id)"></div><!--
+                    !--><div class="sentence-t" style="width:75px;"><input type="radio" name="{{wordsCtrl.returnString(word.engForm, sentence.qsentence.id)}}" ng-checked="{{!sentence.qsentence.corr}}" ng-click="wordsCtrl.updateCorrectnessValue(false, word.engForm, sentence.qsentence.id)"></div>
+                </div>
+                <div class="sentence-title">
+                    <div class="sentence-t sentence-l" style="width:20px;">N:</div><!--
+                    !--><div class="sentence-t sentence-t-sentence" style="width:980px;"><input class="sentence-input" type="text" ng-model="sentence.nsentence.ncontent" ng-blur="wordsCtrl.updateSentenceContentValue(sentence.nsentence.ncontent, word.engForm, sentence.nsentence.id)"></div><!--
+                    !--><div class="sentence-t" style="width:75px;"><input type="radio" name="{{wordsCtrl.returnString(word.engForm, sentence.nsentence.id)}}" ng-checked="{{sentence.nsentence.corr}}" ng-click="wordsCtrl.updateCorrectnessValue(true, word.engForm, sentence.nsentence.id)"></div><!--
+                    !--><div class="sentence-t" style="width:75px;"><input type="radio" name="{{wordsCtrl.returnString(word.engForm, sentence.nsentence.id)}}" ng-checked="{{!sentence.nsentence.corr}}" ng-click="wordsCtrl.updateCorrectnessValue(false, word.engForm, sentence.nsentence.id)"></div>
+                </div>
+            </div>
+            <div class="sentence-title">
+                <div class="sentence-t sentence-l" style="width:20px;">S:</div><!--
+                !--><div class="sentence-t sentence-t-sentence" style="width:980px;"><input class="sentence-input" ng-model="word.synonyms.syncontent" ng-blur="wordsCtrl.updateSynonymContent(word.engForm, word.synonyms.syncontent)"></div><!--
+                !--><div class="sentence-t" style="width:75px;"><input type="radio" name="{{word.engForm}}" ng-checked="{{word.synonyms.corr}}" ng-click="wordsCtrl.updateSynonymCorrectness(word.engForm, true)"></div><!--
+                !--><div class="sentence-t" style="width:75px;"><input type="radio" name="{{word.engForm}}" ng-checked="{{!word.synonyms.corr}}" ng-click="wordsCtrl.updateSynonymCorrectness(word.engForm, false)"></div>
+            </div>
+            <hr style="width: 1150px; text-align: left; margin-left: 5px;">
+        </div>
+    <div class="panel-footer">
+        Expand your vocabulary with EYV!
+    </div>
+</body>
+</html>
+

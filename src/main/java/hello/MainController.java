@@ -1,6 +1,5 @@
 package hello;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -11,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-
 
 @Controller    // This means that this class is a Controller
 @RequestMapping(path="/demo") // This means URL's start with /demo (after Application path)
@@ -399,7 +397,7 @@ public class MainController {
                 }
             }
 
-            //Fitlracja po słowie
+            //Fitlracja po dacie modyfikacji
             if (moddate != null){
                 System.out.println("Wszedłem: moddate != null");
                 if (!Objects.equals(word.getModDate(), moddate)){
@@ -421,11 +419,10 @@ public class MainController {
     }
 
     //Metoda testowa do wyszukiwania ID
-    @GetMapping(path="/selectId") // Map ONLY GET Requests
+    @GetMapping(path="/selectId")
     public @ResponseBody List<Word> selectWord () {
 
         List<Word> wordList;
-
         wordList = prepareWordList();
 
         return wordList;
