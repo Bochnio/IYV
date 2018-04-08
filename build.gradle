@@ -14,7 +14,15 @@ apply plugin: 'org.springframework.boot'
 
 jar {
     baseName = 'gs-actuator-service'
-    version =  '0.1.0'
+    version =  '1.0.0'
+
+    // Keep jar clean:
+    exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/*.MF'
+
+    manifest {
+        attributes  'Main-Class': 'HelloWorldConfiguration',
+                    'Class-Path': configurations.runtime.files.collect { "lib/$it.name" }.join(' ')
+    }
 }
 
 repositories {
