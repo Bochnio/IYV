@@ -16,13 +16,6 @@ jar {
     baseName = 'gs-actuator-service'
     version =  '0.2.0'
 
-    // Keep jar clean:
-    exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/*.MF'
-
-    manifest {
-        attributes  'Main-Class': 'HelloWorldConfiguration',
-                    'Class-Path': configurations.runtime.files.collect { "lib/$it.name" }.join(' ')
-    }
 }
 
 repositories {
@@ -32,13 +25,13 @@ repositories {
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+println 'It is just a test...'
+
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
     compile("org.springframework.boot:spring-boot-starter-actuator")
-    compile 'org.springframework.boot:spring-boot-starter-data-jpa'
-    compile 'mysql:mysql-connector-java'
+    compile("org.springframework.boot:spring-boot-starter-data-jpa")
+    compile("mysql:mysql-connector-java")
     testCompile("org.springframework.boot:spring-boot-starter-test")
     testCompile("junit:junit")
-
 }
-
