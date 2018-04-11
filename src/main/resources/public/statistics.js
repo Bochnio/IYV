@@ -9,7 +9,7 @@
         var wordsNumberContext = this;
         var sentencesNumberContext = this;
 
-        $http.get('http://localhost:9000/stats/getSentencesNumber').then(successCallbackSent, errorCallbackSent);
+        $http.get('http://bochen.eu-central-1.elasticbeanstalk.com//stats/getSentencesNumber').then(successCallbackSent, errorCallbackSent);
         function successCallbackSent(response){
             sentencesNumberContext.sentencesNumber = response.data;
         }
@@ -17,7 +17,7 @@
             alert('Błąd! Komunikacja z bazą danych zakończona błędem.');
         }
 
-        $http.get('http://localhost:9000/stats/getWordsNumber').then(successCallbackWord, errorCallbackWord);
+        $http.get('http://bochen.eu-central-1.elasticbeanstalk.com/stats/getWordsNumber').then(successCallbackWord, errorCallbackWord);
         function successCallbackWord(response){
             wordsNumberContext.wordNumber = response.data;
         }
