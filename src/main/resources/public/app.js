@@ -1,6 +1,9 @@
 (function(){
     var app = angular.module('vocabularyBuilder', [ ]);
 
+    var address = "http://localhost:5000/demo/";
+    //var address = "http://bochen.eu-central-1.elasticbeanstalk.com/demo/";
+
     app.controller('wordsController', ['$http', '$scope', function($http, $scope){
 
         //funkcja dodająca nowe słowo jeśli nie było takiego wcześniej
@@ -34,7 +37,7 @@
 
                 //Wywołanie metody dodającej nowe słowa
                 $http({
-                    url: "http://bochen.eu-central-1.elasticbeanstalk.com/demo/addNewWord",
+                    url: address + "addNewWord",
                     method: "GET",
                     params: {word: engWord, translation: translation, addDate: '2017-11-07', modDate: '2017-11-15'}
                 }).then(successCallback, errorCallback);
@@ -57,7 +60,7 @@
 
                     //Wywołanie metody usuwającej słowo
                     $http({
-                        url: "http://bochen.eu-central-1.elasticbeanstalk.com/demo/deleteWord",
+                        url: address + "deleteWord",
                         method: "GET",
                         params: {word: engWord}
                     }).then(successCallback, errorCallback);
@@ -100,7 +103,7 @@
 
                         //Funkcja dodające 3 nowe zdania po stronie serwera
                         $http({
-                            url: "http://bochen.eu-central-1.elasticbeanstalk.com/demo/addNewPackage",
+                            url: address + "addNewPackage",
                             method: "GET",
                             params: {word: engWord}
                         }).then(successCallback, errorCallback);
@@ -133,7 +136,7 @@
                     }
                     //Funkcja aktualizująca poprawność wybranego zdania
                     $http({
-                        url: "http://bochen.eu-central-1.elasticbeanstalk.com/demo/updateSentenceCorrectness",
+                        url: address + "updateSentenceCorrectness",
                         method: "GET",
                         params: {word: engWord, sentCorr: corrValue, sentId: sequenceID}
                     }).then(successCallback, errorCallback);
@@ -167,7 +170,7 @@
 
                     //Funkcja aktualizująca treść wybranego zdania
                     $http({
-                        url: "http://bochen.eu-central-1.elasticbeanstalk.com/demo/updateSentenceContent",
+                        url: address + "updateSentenceContent",
                         method: "GET",
                         params: {word: engWord, sent_cont: contentValue, sent_id: sequenceID}
                     }).then(successCallback, errorCallback);
@@ -191,7 +194,7 @@
 
                     //Funkcja aktualizująca treść wybranego zdania
                     $http({
-                        url: "http://bochen.eu-central-1.elasticbeanstalk.com/demo/updateTranslation",
+                        url: address + "updateTranslation",
                         method: "GET",
                         params: {word: engWord, translation: plWord}
                     }).then(successCallback, errorCallback);
@@ -215,7 +218,7 @@
 
                     //Funkcja do aktualizacji treści synonimu po stronie serwera
                     $http({
-                        url: "http://bochen.eu-central-1.elasticbeanstalk.com/demo/updateSynonymContent",
+                        url: address + "updateSynonymContent",
                         method: "GET",
                         params: {word: engWord, synCont: synCont}
                     }).then(successCallback, errorCallback);
@@ -239,7 +242,7 @@
 
                     //Funkcja do aktualizacji poprawności synonimu po stronie serwera
                     $http({
-                        url: "http://bochen.eu-central-1.elasticbeanstalk.com/demo/updateSynonymCorrectness",
+                        url: address + "updateSynonymCorrectness",
                         method: "GET",
                         params: {word: engWord, synCorr: synCorr}
                     }).then(successCallback, errorCallback);
@@ -294,7 +297,7 @@
             //Wywołanie metody do filtrowania
             console.log("onlyWrong: " + $scope.onlyWrong + " findWord: " + $scope.findWordParam + " onlyOk: " + $scope.onlyOk + " notValid: " + $scope.notValid + "adddate: " + $scope.addDateParam + "moddate: " + $scope.modDateParam);
             $http({
-                url: "http://bochen.eu-central-1.elasticbeanstalk.com/demo/search",
+                url: address + "search",
                 method: "GET",
                 params: {findword: $scope.findWordParam, onlywrong: $scope.onlyWrong, onlyok: $scope.onlyOk, notvalid: $scope.notValid, adddate: $scope.addDateParam, moddate: $scope.modDateParam}
             }).then(successCallback, errorCallback);

@@ -9,7 +9,7 @@
         var wordsNumberContext = this;
         var sentencesNumberContext = this;
 
-        $http.get('http://bochen.eu-central-1.elasticbeanstalk.com//stats/getSentencesNumber').then(successCallbackSent, errorCallbackSent);
+        $http.get('http://bochen.eu-central-1.elasticbeanstalk.com/stats/getSentencesNumber').then(successCallbackSent, errorCallbackSent);
         function successCallbackSent(response){
             sentencesNumberContext.sentencesNumber = response.data;
         }
