@@ -1,8 +1,9 @@
 (function(){
     var app = angular.module('vocabularyBuilder', [ ]);
 
-    var address = "http://localhost:5000/demo/";
-    //var address = "http://bochen.eu-central-1.elasticbeanstalk.com/demo/";
+    //Zmienna testowa
+    //var address = "http://localhost:5000/demo/";
+    var address = "http://bochen.eu-central-1.elasticbeanstalk.com/demo/";
 
     app.controller('wordsController', ['$http', '$scope', function($http, $scope){
 

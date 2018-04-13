@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html ng-app="statistics">
+<html lang="pl-PL" data-ng-app="statistics">
 <head>
     <script src="angular.min.js"></script>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="bootstrap/css/bootstrap.css">
     <script src="bootstrap/js/jquery-3.2.1.min.js"></script>
     <script src="bootstrap/js/bootstrap.js"></script>
-    <script type="text/javascript" src="statistics.js"></script>
+    <script src="statistics.js"></script>
     <link rel="Stylesheet" type="text/css" href="css/styles.css"/>
+    <title>Program do nauki nowych słówek w języku angielskim - Improve Your Vocabulary</title>
 </head>
 <body>
-    <!-- TO-DO: zastąpić własną dyrektywą z parametrem aktywnej zakładki? -->
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <div class="navbar-header">
@@ -23,10 +23,9 @@
             </ul>
         </div>
     </nav>
-    <!-- TO-DO: Tak nie może zostać. DIV pokrywa DIV i jest odstęp na sztywno -->
-    <div class="content" ng-controller="statsController as stats">
+    <div class="content" data-ng-controller="statsController as stats">
         <div class="div-title">
-            <p>Statystyki:<p/>
+            <p>Statystyki:</p>
         </div>
         <div class="statistics">
             <p>Liczba dodanych słów: {{stats.wordNumber}}</p>
@@ -34,7 +33,7 @@
         </div>
     </div>
     <div class="panel-footer">
-        Expand your vocabulary with EYV! <i>&copy Dominik Bocheński</i>
+        Expand your vocabulary with EYV! <i>Dominik Bocheński &copy;</i>
     </div>
 </body>
 </html>
