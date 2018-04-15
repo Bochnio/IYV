@@ -4,8 +4,8 @@
     app.controller('statsController', ['$http', '$scope', function($http, $scope){
 
         //zmienne testowe
-        var address = "http://localhost:5000/stats/";
-        //var address = "http://bochen.eu-central-1.elasticbeanstalk.com/stats/";
+        //var address = "http://localhost:5000/stats/";
+        var address = "http://bochen.eu-central-1.elasticbeanstalk.com/stats/";
 
         this.wordNumber;
         this.sentencesNumber;

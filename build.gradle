@@ -14,7 +14,7 @@ apply plugin: 'org.springframework.boot'
 
 jar {
     baseName = 'gs-actuator-service'
-    version =  '0.18.0'
+    version =  '0.20.0'
 }
 
 repositories {

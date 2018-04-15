@@ -2,8 +2,8 @@
     var app = angular.module('vocabularyBuilder', [ ]);
 
     //Zmienne testowe
-    var address = "http://localhost:5000/demo/";
-    //var address = "http://bochen.eu-central-1.elasticbeanstalk.com/demo/";
+    //var address = "http://localhost:5000/demo/";
+    var address = "http://bochen.eu-central-1.elasticbeanstalk.com/demo/";
 
     var today = new Date();
     var dd = today.getDate();
