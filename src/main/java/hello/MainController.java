@@ -115,6 +115,16 @@ public class MainController {
         return wordList;
     }
 
+    @GetMapping(path="/sendAllWords")
+    public @ResponseBody List<Word> sendAllWords() {
+
+        List<Word> wordList;
+
+        wordList = prepareWordList();
+
+        return wordList;
+    }
+
     @GetMapping(path="/addNewWord")
     public @ResponseBody void addNewWord (HttpServletResponse response, String word, String translation, String addDate, String modDate) {
         response.setHeader("Access-Control-Allow-Origin", "*");
@@ -160,15 +170,19 @@ public class MainController {
     }
 
     @GetMapping(path="/updateSentenceContent") // Map ONLY GET Requests
-    public @ResponseBody void updateSentenceContent (HttpServletResponse response, String word, String sent_cont, Integer sent_id) {
+    public @ResponseBody void updateSentenceContent (HttpServletResponse response, String word, String sent_cont, Integer sent_id, String mod_date) {
         response.setHeader("Access-Control-Allow-Origin", "*");
         Dictionary dictionary;
         dictionary = dictionaryRepository.findByWord(word);
 
+        dictionary.setModDate(mod_date);
+
         Sentence sentence;
         sentence = sentenceRepository.findByWordIdAndSentId(dictionary.getId(), sent_id);
         sentence.setSentCont(sent_cont);
+
         sentenceRepository.save(sentence);
+        dictionaryRepository.save(dictionary);
     }
 
     @GetMapping(path="/updateSentenceCorrectness")
@@ -201,20 +215,6 @@ public class MainController {
         dictionaryRepository.delete(dictionary);
 
     }
-
-    @Controller
-    @RequestMapping("/sendAllWords")
-    public class HelloWorldController {
-        @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-        public @ResponseBody List<Word> sendAllWords(HttpServletResponse response) {
-            response.setHeader("Access-Control-Allow-Origin", "*");
-            List<Word> wordList;
-
-            wordList = prepareWordList();
-
-            return wordList;
-            }
-        }
 
     @GetMapping(path="/addNewPackage")
     public @ResponseBody void addNewPackage (HttpServletResponse response, String word) {
@@ -267,15 +267,17 @@ public class MainController {
     }
 
     @GetMapping(path="/updateSynonymContent")
-    public @ResponseBody void updateSynonymContent (HttpServletResponse response, String word, String synCont) {
+    public @ResponseBody void updateSynonymContent (HttpServletResponse response, String word, String synCont, String modDate) {
         response.setHeader("Access-Control-Allow-Origin", "*");
         Dictionary dictionary;
         dictionary = dictionaryRepository.findByWord(word);
+        dictionary.setModDate(modDate);
 
         Synonym synonym;
         synonym = synonymRepository.findByWordId(dictionary.getId());
         synonym.setSynCont(synCont);
         synonymRepository.save(synonym);
+        dictionaryRepository.save(dictionary);
 
     }
 
@@ -292,7 +294,7 @@ public class MainController {
 
     }
 
-    //Metoda testowa do wyszukiwania ID
+    //Metoda do wyszukiwania
     @GetMapping(path="/search")
     public @ResponseBody List<Word> search (HttpServletResponse response, String findword, Integer onlywrong, Integer onlyok, Integer notvalid, String adddate, String moddate) {
         response.setHeader("Access-Control-Allow-Origin", "*");
@@ -301,9 +303,9 @@ public class MainController {
 
         List<Word> wordList;
         wordList = prepareWordList();
-
+        Word word;
         for (Iterator<Word> i = wordList.iterator(); i.hasNext();) {
-            Word word;
+
             word = i.next();
 
             System.out.println("Opracowuję słowo: " + word.getEngForm() + " <--");
@@ -314,6 +316,7 @@ public class MainController {
                 if (!Objects.equals(word.getEngForm(), findword)){
                     System.out.println("findWord -> usuwam!");
                     i.remove();
+                    continue;
                 }
             }
 
@@ -338,6 +341,7 @@ public class MainController {
                 if (falseCounter==0){
                     System.out.println("onlyWrong -> usuwam!");
                     i.remove();
+                    continue;
                 }
             }
 
@@ -361,6 +365,7 @@ public class MainController {
                 }
                 if (falseCounter!=0){
                     i.remove();
+                    continue;
                 }
             }
 
@@ -385,6 +390,7 @@ public class MainController {
                 if (falseCounter==0){
                     System.out.println("onlyWrong -> usuwam!");
                     i.remove();
+                    continue;
                 }
             }
 
@@ -394,15 +400,17 @@ public class MainController {
                 if (!Objects.equals(word.getAddDate(), adddate)){
                     System.out.println("adddate -> usuwam!");
                     i.remove();
+                    continue;
                 }
             }
 
-            //Fitlracja po dacie modyfikacji
+            //Filtracja po dacie modyfikacji
             if (moddate != null){
                 System.out.println("Wszedłem: moddate != null");
                 if (!Objects.equals(word.getModDate(), moddate)){
                     System.out.println("moddate -> usuwam!");
                     i.remove();
+                    continue;
                 }
             }
 
@@ -414,19 +422,8 @@ public class MainController {
 
     @GetMapping(path="/all")
     public @ResponseBody Iterable<Sentence> getAllWords() {
-        // This returns a JSON or XML with the users
+
         return sentenceRepository.findAll();
-    }
-
-    //Metoda testowa do wyszukiwania ID
-    @GetMapping(path="/selectId")
-    public @ResponseBody List<Word> selectWord () {
-
-        List<Word> wordList;
-        wordList = prepareWordList();
-
-        return wordList;
-
     }
 
 }

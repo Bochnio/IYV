@@ -41,14 +41,14 @@
                                     <div class="modal-title">
                                         <form name="newWordForm">
                                         <div class="modal-t" style="width:40px;">ENG:</div><!--
-                                    !--><div class="modal-t" style="width:400px;"><input style="width:350px;" data-ng-model="newEngWord" required></div><!--
+                                    !--><div class="modal-t" style="width:400px;"><input style="width:350px;" ng-pattern="/^[a-zA-Z\s]*$/" data-ng-model="newEngWord" required></div><!--
                                     !--><div class="modal-t" style="width:40px;">PL:</div><!--
-                                    !--><div class="modal-t" style="width:400px;"><input style="width:350px;" data-ng-model="newTranslation" required></div>
+                                    !--><div class="modal-t" style="width:400px;"><input style="width:350px;" ng-pattern="/^[a-zA-Z\s]*$/" data-ng-model="newTranslation" required></div>
                                         </form>
                                     </div>
                                 </div>
                                 <div>
-                                    <p style="margin-left: 20px; font-size: x-small" data-ng-show="newEngWord==='' || newTranslation===''">By dodać nowe słowo uzupełnij pola...</p>
+                                    <p style="margin-left: 20px; font-size: x-small" data-ng-show="!(newWordForm.$valid)">By dodać nowe słowo uzupełnij pola. Dozwolone tylko znaki alfanumeryczne oraz białe.</p>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-default" data-ng-show="newWordForm.$valid" data-ng-click="wordsCtrl.addWord(newEngWord, newTranslation)" data-dismiss="modal">Dodaj Słowo</button>
@@ -139,11 +139,10 @@
                     !--><div class="word-t pl-t" style="width:35px;">PL:</div><!--
                     !--><div class="word-t pl-w" style="width:500px;"><input class="sentence-input" data-ng-model="word.plForm" data-ng-blur="wordsCtrl.updateSentenceTranslationValue(word.engForm, word.plForm)"></div><!--
                     !--><div class="word-t" style="width:35px;"><button data-ng-click="wordsCtrl.addSentences(word.engForm)" class="glyphicon glyphicon-plus-sign span-word-icon"></button></div><!--
-                    !--><div class="word-t" style="width:35px;"><button class="glyphicon glyphicon-minus-sign span-word-icon" data-toggle="modal" data-target="#{{word.engForm}}"></button></div><!--
-                    !--><div class="word-t" style="width:35px; margin-left: 5px"><div class="glyphicon glyphicon-question-sign span-word-icon" data-toggle="tooltip" data-placement="top" title="Data utworzenia: {{word.addDate}} Data modyfikacji: {{word.modDate}}"></div>
-                </div>
+                    !--><div class="word-t" style="width:35px;"><button class="glyphicon glyphicon-minus-sign span-word-icon" data-toggle="modal" data-target="#{{wordsCtrl.removeSpaces(word.engForm)}}"></button></div><!--
+                    !--><div class="word-t" style="width:35px; margin-left: 5px"><div class="glyphicon glyphicon-question-sign span-word-icon" data-toggle="tooltip" data-placement="top" title="Data utworzenia: {{word.addDate}} Data modyfikacji: {{word.modDate}}"></div></div>
                     <!-- Modal usuwania słowa-->
-                    <div class="modal fade" id="{{word.engForm}}" role="dialog">
+                    <div class="modal fade" id="{{wordsCtrl.removeSpaces(word.engForm)}}" role="dialog">
                         <div class="modal-dialog modal-md">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -151,7 +150,7 @@
                                     <h4 class="modal-title">Usuń słowo</h4>
                                 </div>
                                 <div class="modal-body">
-                                    <p>Czy jesteś pewny, że chcesz usunąć słowo {{word.engForm}}"?</p>
+                                    <p>Czy jesteś pewny, że chcesz usunąć słowo "{{word.engForm}}"?</p>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-default" data-ng-click="wordsCtrl.removeWord(word.engForm)" data-dismiss="modal">Usuń słowo</button>

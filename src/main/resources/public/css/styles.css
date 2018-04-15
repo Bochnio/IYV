@@ -30,6 +30,7 @@ input {
     font-weight: bold;
     margin-top: 10px;
     text-decoration-color: #3c3c3c;
+    width: 800px;
 }
 
 .add-search {
@@ -38,6 +39,7 @@ input {
     margin-left: 10px;
     height: 50px;
     margin-top: 10px;
+    width: 1200px;
 }
 
 .add-search-element {
@@ -203,4 +205,8 @@ input {
     margin-top: 20px;
     margin-bottom: 15px;
     font-size: large;
+}
+
+.modal-content{
+    width: 900px;
 }

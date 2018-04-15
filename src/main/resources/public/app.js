@@ -1,9 +1,24 @@
 (function(){
     var app = angular.module('vocabularyBuilder', [ ]);
 
-    //Zmienna testowa
-    //var address = "http://localhost:5000/demo/";
-    var address = "http://bochen.eu-central-1.elasticbeanstalk.com/demo/";
+    //Zmienne testowe
+    var address = "http://localhost:5000/demo/";
+    //var address = "http://bochen.eu-central-1.elasticbeanstalk.com/demo/";
+
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth()+1; //January is 0!
+    var yyyy = today.getFullYear();
+
+    if(dd<10) {
+        dd = '0'+dd
+    }
+
+    if(mm<10) {
+        mm = '0'+mm
+    }
+
+    today = yyyy + '-' + mm + '-' + dd;
 
     app.controller('wordsController', ['$http', '$scope', function($http, $scope){
 
@@ -30,9 +45,8 @@
                     }
                     ],
                     synonyms: {syncontent: '', corr: 'null'},
-                    //TO-DO: Po dodaniu nowego słowa daty ustawiają się na sztywno
-                    addDate: '2017-11-07',
-                    modDate: '2017-11-15',
+                    addDate: today,
+                    modDate: today,
                     maxId: 2
                 });
 
@@ -40,7 +54,7 @@
                 $http({
                     url: address + "addNewWord",
                     method: "GET",
-                    params: {word: engWord, translation: translation, addDate: '2017-11-07', modDate: '2017-11-15'}
+                    params: {word: engWord, translation: translation, addDate: today, modDate: today}
                 }).then(successCallback, errorCallback);
                 function successCallback(response){
                     console.log("Zapis nowego słowa przebiegł poprawnie");
@@ -169,11 +183,13 @@
                         }
                     }
 
+                    this.word[i].modDate = today;
+
                     //Funkcja aktualizująca treść wybranego zdania
                     $http({
                         url: address + "updateSentenceContent",
                         method: "GET",
-                        params: {word: engWord, sent_cont: contentValue, sent_id: sequenceID}
+                        params: {word: engWord, sent_cont: contentValue, sent_id: sequenceID, mod_date: today}
                     }).then(successCallback, errorCallback);
                     function successCallback(response){
                         console.log("Aktualizacja treści zdania przebiegła poprawnie");
@@ -217,11 +233,13 @@
                     console.log("synCont: " + synCont);
                     this.word[i].synonyms.syncontent = synCont;
 
+                    this.word[i].modDate = today;
+
                     //Funkcja do aktualizacji treści synonimu po stronie serwera
                     $http({
                         url: address + "updateSynonymContent",
                         method: "GET",
-                        params: {word: engWord, synCont: synCont}
+                        params: {word: engWord, synCont: synCont, modDate: today}
                     }).then(successCallback, errorCallback);
                     function successCallback(response){
                         console.log("Aktualizacja treści synonimu przebiegła poprawnie");
@@ -258,23 +276,9 @@
             }
         };
 
-        //********** Metody testowe **********
-        $scope.showAlert = function(text) {
-            alert(text);
-        };
-
-        this.alert = function(test) {
-            alert(test);
-        };
-
-        //********** Metody testowe **********
-
-        //Przypisanie testowe
-        //this.word = words;
-
         var that = this;
 
-        $http.get('http://bochen.eu-central-1.elasticbeanstalk.com/sendAllWords').then(successCallback, errorCallback);
+        $http.get(address + "sendAllWords").then(successCallback, errorCallback);
         function successCallback(response){
             that.word = response.data;
         }
@@ -284,6 +288,10 @@
 
         this.returnString = function(engWord, sequenceID) {
             return engWord+sequenceID;
+        };
+
+        this.removeSpaces = function(engWord) {
+            return engWord=engWord.replace(/ +/g, "");
         };
 
         $scope.findWordParam = null;
@@ -310,6 +318,16 @@
                 alert('Błąd! Komunikacja z bazą danych zakończona błędem. ' + error);
             }
         };
+
+        //********** Metody testowe >>
+        $scope.showAlert = function(text) {
+            alert(text);
+        };
+
+        this.alert = function(test) {
+            alert(test);
+        };
+        //<< Metody testowe **********
 
     }]);
 
