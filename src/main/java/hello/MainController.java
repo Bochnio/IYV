@@ -172,6 +172,7 @@ public class MainController {
     @GetMapping(path="/updateSentenceContent") // Map ONLY GET Requests
     public @ResponseBody void updateSentenceContent (HttpServletResponse response, String word, String sent_cont, Integer sent_id, String mod_date) {
         response.setHeader("Access-Control-Allow-Origin", "*");
+
         Dictionary dictionary;
         dictionary = dictionaryRepository.findByWord(word);
 

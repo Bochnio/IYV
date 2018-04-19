@@ -26,7 +26,7 @@
     <div class="content" data-ng-controller="wordsController as wordsCtrl">
             <div class="add-search">
                 <div class="add-search-element">
-                <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#myModal" data-ng-click="newEngWord='' ; newTranslation=''">
+                <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#myModal" data-ng-click="newEngWord='' ; newTranslation=''" title="Dodaj nowe słowo">
                     <span class="glyphicon glyphicon-plus-sign"></span>
                 </button>
                 <!-- Modal dodawania słowa -->
@@ -59,7 +59,7 @@
                     </div>
                 </div>
                 <div class="dropdown add-search-element">
-                    <button type="button" class="btn btn-primary dropdown-toggle btn btn-default btn-sm" data-toggle="dropdown">
+                    <button type="button" class="btn btn-primary dropdown-toggle btn btn-default btn-sm" data-toggle="dropdown" title="Znajdź słowa">
                         <span class="glyphicon glyphicon-search"></span>
                     </button>
                     <ul class="dropdown-menu">
@@ -138,8 +138,8 @@
                     !--><div class="word-t ang-w" style="width:300px;">{{word.engForm}}</div><!--
                     !--><div class="word-t pl-t" style="width:35px;">PL:</div><!--
                     !--><div class="word-t pl-w" style="width:500px;"><input class="sentence-input" data-ng-model="word.plForm" data-ng-blur="wordsCtrl.updateSentenceTranslationValue(word.engForm, word.plForm)"></div><!--
-                    !--><div class="word-t" style="width:35px;"><button data-ng-click="wordsCtrl.addSentences(word.engForm)" class="glyphicon glyphicon-plus-sign span-word-icon"></button></div><!--
-                    !--><div class="word-t" style="width:35px;"><button class="glyphicon glyphicon-minus-sign span-word-icon" data-toggle="modal" data-target="#{{wordsCtrl.removeSpaces(word.engForm)}}"></button></div><!--
+                    !--><div class="word-t" style="width:35px;"><button data-ng-click="wordsCtrl.addSentences(word.engForm)" class="glyphicon glyphicon-plus-sign span-word-icon" title="Dodaj nowy zestaw zdań"></button></div><!--
+                    !--><div class="word-t" style="width:35px;"><button class="glyphicon glyphicon-minus-sign span-word-icon" data-toggle="modal" data-target="#{{wordsCtrl.removeSpaces(word.engForm)}}" title="Usuń słowo"></button></div><!--
                     !--><div class="word-t" style="width:35px; margin-left: 5px"><div class="glyphicon glyphicon-question-sign span-word-icon" data-toggle="tooltip" data-placement="top" title="Data utworzenia: {{word.addDate}} Data modyfikacji: {{word.modDate}}"></div></div>
                     <!-- Modal usuwania słowa-->
                     <div class="modal fade" id="{{wordsCtrl.removeSpaces(word.engForm)}}" role="dialog">
