@@ -1,0 +1,6 @@
+1. Stronnicowanie po 50.
+2. Licznik wyświetlanych słów.
+3. Wyświetlane domyślnie tylko te, które zawierają jakieś niesprawdzone lub niepoprawne słowa.
+4. Szukajka dla pól z datą w formie datepickera.
+5. Logowanie.
+6. Konta użytkowników.
